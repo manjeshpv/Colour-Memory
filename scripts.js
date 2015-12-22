@@ -17,7 +17,7 @@ $(function () {
     showScore = function () {
         var i;
         for (i = 0; i < players.length; i += 1) {
-            players[i].el.innerHTML = '<b>Player ' + (i + 1) + '</b>: matches: ' + players[i].matches + '; turns: ' + players[i].turns;
+            players[i].el.innerHTML = '<b>SCORE: ' + players[i].matches + '</b>';
             if (curPlayer === i) {
                 $(players[i].el).addClass('active');
             } else {
@@ -28,20 +28,46 @@ $(function () {
     determineWinner = function () {
         var winner = 0, isDraw, i;
         if (players.length === 1) {
-            alert('You Win!');
-        } else {
-            isDraw = true;
-            for (i = 1; i < players.length; i += 1) {
-                if (players[i].matches !== players[winner].matches) { isDraw = false; }
-                if (players[i].matches > players[winner].matches) {
-                    winner = i;
+            var name = prompt("Please enter your name", "Harry Potter");
+            var email = prompt("Please enter your email", "harry@potter.com");
+            jQuery.ajax({
+                url: "https://api.mongolab.com/api/1/databases/tsc/collections/games?apiKey=lLf757Qq1badmMAwhHT6Y21tRCgKt1rr",
+                type: "POST",
+                data: JSON.stringify({name: name, email: email, score: players[0].matches}),
+                contentType: "application/json",
+                success: function (res) {
+                    currentPlayerID = res._id.$oid
+                    jQuery.ajax({
+                        url: "https://api.mongolab.com/api/1/databases/tsc/collections/games?apiKey=lLf757Qq1badmMAwhHT6Y21tRCgKt1rr",
+                        contentType: "application/json",
+                        success: function (response) {
+                            console.log(response)
+                            response = (_.sortBy(response,'score')).reverse()
+                            curretRating = _.pluck(_.pluck(response,'_id'),'$oid').indexOf(currentPlayerID);
+                            alert("Your rating is: "+(curretRating+1));
+
+                            var data = {response:response};
+                            var template = "<table  class='table table-striped'>" +
+                                "<thead><tr><th>Name</th><th>Email</th><th>Score</th></tr></thead>" +
+                                "<tbody>" +
+                                "{{#response}}" +
+                                "<tr><td>{{name}}</td><td>{{email}}</td><td>{{score}}</td></tr>" +
+                                "{{/response}}</tbody></table>";
+                            var html = Mustache.to_html(template, data);
+                            console.log(html)
+                            $('#results').html(html);
+                            $('#results').show();
+                            $('#Playfield').hide();
+
+                        }, error: function (err) {
+                            console.log(err)
+                        }
+                    })
+
+                }, error: function (err) {
+                    console.log(err)
                 }
-            }
-            if (isDraw) {
-                alert('Alas, a draw!');
-            } else {
-                alert('Player ' + (winner + 1) + ' wins!');
-            }
+            })
         }
     };
     cardClick = function () {
@@ -60,10 +86,12 @@ $(function () {
                             determineWinner();
                         }
                     } else {
+
                         freeze = true;
                         setTimeout(function () {
                             $(t).addClass('down');
                             freeze = false;
+                            players[curPlayer].matches -= 1;
                             curPlayer += 1;
                             if (curPlayer >= players.length) { curPlayer = 0; }
                             showScore();
@@ -108,15 +136,9 @@ $(function () {
             $('#PlayScore').append(players[i].el);
         }
     };
-    changeGameType = function () {
-        $(this).text('Play ' + maxPlayers + '-player game');
-        maxPlayers = maxPlayers === 1 ? 2 : 1;
-        setupPlayers();
-        showScore();
-        shuffle();
-    };
+
     $('#shuffleButton').click(shuffle);
-    $('#playerButton').click(changeGameType);
+
     setupPlayers();
     showScore();
     shuffle();

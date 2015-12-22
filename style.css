@@ -1,7 +1,7 @@
 /**
  * Created by Manjesh on 22-12-2015.
  */
-#Playfield {
+.Playfield {
     width: 100%;
     margin: 0 auto;
 
@@ -17,10 +17,14 @@
     -o-perspective: 500px;
     -ms-perspective: 500px;
 }
-#PlayControls, #PlayScore {
-    width: 500px;
-    margin: 0 auto;
+#results {
+    display: none;
 }
+
+#PlayControls {
+    text-align: center;
+}
+
 .card {
     background-color: #ffffff;
     border: 1px solid black;
@@ -84,4 +88,12 @@ li.active {
     height:576px;
     border: 1px solid #ccc;
     padding:50px 0 0 30px;
+}
+
+.game-information {
+    height: 370px;
+}
+
+#shuffleButton {
+    font-size: 24px;
 }
