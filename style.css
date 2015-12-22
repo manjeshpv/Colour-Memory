@@ -1,0 +1,87 @@
+/**
+ * Created by Manjesh on 22-12-2015.
+ */
+#Playfield {
+    width: 100%;
+    margin: 0 auto;
+
+    perspective-origin: 50% 50%;
+    -webkit-perspective-origin: 50% 50%;
+    -moz-perspective-origin: 50% 50%;
+    -o-perspective-origin: 50% 50%;
+    -ms-perspective-origin: 50% 50%;
+
+    perspective: 500px;
+    -webkit-perspective: 500px;
+    -moz-perspective: 500px;
+    -o-perspective: 500px;
+    -ms-perspective: 500px;
+}
+#PlayControls, #PlayScore {
+    width: 500px;
+    margin: 0 auto;
+}
+.card {
+    background-color: #ffffff;
+    border: 1px solid black;
+    border-radius: 0px;
+    float: left;
+    width: 110px;
+    height: 110px;
+    padding: 5px;
+    margin: 5px;
+
+    transition: transform 500ms ease, background-color 500ms ease, border-radius 500ms ease;
+    -webkit-transition: -webkit-transform 500ms ease, background-color 500ms ease, border-radius 500ms ease;
+    -moz-transition: -moz-transform 500ms ease, background-color 500ms ease, border-radius 500ms ease;
+    -o-transition: -o-transform 500ms ease, background-color 500ms ease, border-radius 500ms ease;
+    -ms-transition: -ms-transform 500ms ease, background-color 500ms ease, border-radius 500ms ease;
+}
+
+.card.one {
+    background:#e63b3b;
+}
+.card.two {
+    background: #e6e03b;
+}
+.card.three {
+    background: #4ee63b;
+}
+.card.four {
+    background: #3be6c4;
+}
+.card.five {
+    background: #3b8fe6;
+}
+.card.six {
+    background: #6f3be6;
+}
+.card.seven {
+    background: #ff00de;
+}
+.card.eight {
+    background: #ff5a00;
+}
+.card.down {
+    background-color: #000000;
+    border-radius: 0px;
+
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+}
+.card.matched {
+    background-color: #999999;
+}
+li.active {
+    background-color: #aaaaff;
+}
+
+.container {
+    width:720px;
+    height:576px;
+    border: 1px solid #ccc;
+    padding:50px 0 0 30px;
+}
