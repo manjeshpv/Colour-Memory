@@ -2,6 +2,110 @@
  * Created by Manjesh on 22-12-2015.
  */
 $(function () {
+
+
+    // refined add event cross browser
+    function addEvent(elem, event, fn) {
+        if (typeof elem === "string") {
+            elem = document.getElementById(elem);
+        }
+
+        // avoid memory overhead of new anonymous functions for every event handler that's installed
+        // by using local functions
+        function listenHandler(e) {
+            var ret = fn.apply(this, arguments);
+            if (ret === false) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            return(ret);
+        }
+
+        function attachHandler() {
+            // set the this pointer same as addEventListener when fn is called
+            // and make sure the event is passed to the fn also so that works the same too
+            var ret = fn.call(elem, window.event);
+            if (ret === false) {
+                window.event.returnValue = false;
+                window.event.cancelBubble = true;
+            }
+            return(ret);
+        }
+
+        if (elem.addEventListener) {
+            elem.addEventListener(event, listenHandler, false);
+        } else {
+            elem.attachEvent("on" + event, attachHandler);
+        }
+    }
+
+
+
+    function addClass(elem, cls) {
+        var oldCls = elem.className;
+        if (oldCls) {
+            oldCls += " ";
+        }
+        elem.className = oldCls + cls;
+    }
+
+    function removeClass(elem, cls) {
+        var str = " " + elem.className + " ";
+        elem.className = str.replace(" " + cls + " ", " ").replace(/^\s+|\s+$/g, "");
+    }
+
+
+    function findItem(items, target) {
+        for (var i = 0; i < items.length; i++) {
+            if (items[i] === target) {
+                return(i);
+            }
+        }
+        return(-1);
+    }
+
+    var keys = {up: 38, down: 40, left: 37, right: 39,enter:13};
+    var cards = document.getElementById("Playfield").getElementsByClassName("card");
+    addEvent(document, "keydown", function(e) {
+        // get key press in cross browser way
+        var code = e.which || e.keyCode;
+        // number of items across
+        var width = 4;
+        var increment, index, newIndex, active;
+
+        switch(code) {
+            case keys.up:
+                increment = -width;
+                break;
+            case keys.down:
+                increment = width;
+                break;
+            case keys.left:
+                increment = -1;
+                break;
+            case keys.right:
+                increment = 1;
+                break;
+            case keys.enter:
+                $('.active-card').trigger('click');
+                break;
+            default:
+                increment = 0;
+                break;
+        }
+        if (increment !== 0) {
+            active = document.getElementById("Playfield").getElementsByClassName("active-card")[0];
+            index = findItem(cards, active);
+            newIndex = index + increment;
+            if (newIndex >= 0 && newIndex < cards.length) {
+                removeClass(active, "active-card");
+                addClass(cards[newIndex], "active-card");
+            }
+            // prevent default handling of up, down, left, right keys
+            return false;
+        }
+    });
+
     var freeze = false,
         firstShuffle = true,
         curPlayer = 0,
@@ -126,6 +230,7 @@ $(function () {
                 freeze = false;
             }, 700);
         }
+        $('#Playfield .card:first-child').addClass("active-card");
     };
     setupPlayers = function () {
         var i;

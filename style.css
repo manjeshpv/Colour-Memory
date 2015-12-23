@@ -97,3 +97,5 @@ li.active {
 #shuffleButton {
     font-size: 24px;
 }
+
+.active-card {border:2px solid red;}
